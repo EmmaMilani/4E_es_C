@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
             close(p1p2[READ]);
             close(p1p2[WRITE]);
             close(p2p0[WRITE]);
+            close(p2p0[READ]);
             exit(0);
         }
         pipe(p1p2);
@@ -55,9 +56,12 @@ int main(int argc, char *argv[])
             dup(p2p0[WRITE]);
             close(p2p0[WRITE]);
 
-            execl("/bin/grep", "grep", "-c", "insoluto", NULL);
+            execl("/bin/grep", "grep", "-c", "insoluto",p1p2[0], NULL);
             return -1;
         }
+        close(p1p2[READ]);
+        close(p1p2[WRITE]);
+        close(p2p0[WRITE]);
         read(p2p0[READ], stringa, sizeof(stringa));
         close(p2p0[READ]);
         printf("Sono stati trovati %d insoluti\n", atoi(stringa));
