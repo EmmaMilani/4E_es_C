@@ -39,17 +39,24 @@ int main(int argc, char *argv[])
         close(1);
         dup(p2p0[1]);
         close(p2p0[1]);
-        execl("/usr/bin/awk", "awk", "{print $3}", p1p2[0], NULL);
+        execl("/usr/bin/awk", "awk", "{print $3}", p1p2[0], NULL);//il terzo argomenti mi serve a estrapolare la terza colonna
         return -1;
     }
     close(p1p2[0]);
     close(p1p2[1]);
     close(p2p0[1]);
+    //la stringa dentro la pipe è fatta così: 10\n200\n456\n --> se trova lo \n vuol dire che ha trovato il primo numero
     while (read(p2p0[0], buffer, sizeof(buffer)) > 0)
     {
         strncat(strimporto, &buffer[0], sizeof(buffer[0]));
-        strtod(strimporto, &ptr);
+        if()
+        {
+            printf("Importo ricevuto: %s", strimporto);
+            totale = totale + strtod(strimporto, &ptr);//converto il numero e me lo salvo nel totale
+            strimporto[0] = '\0';//appena trovo uno \n resetto la stringa   
+        }
     }
-
+    close(p2p0[0]);
+    printf("Il totale è: %.2lf\n", totale);//%.2lf ci stampa dopo la virgola solo due cifre
     return 0;
 }
